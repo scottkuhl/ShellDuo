@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="ShellDuo.Views.ItemsPage"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:dualScreen="clr-namespace:Xamarin.Forms.DualScreen;assembly=Xamarin.Forms.DualScreen"
+    xmlns:local="clr-namespace:ShellDuo.ViewModels"
+    xmlns:model="clr-namespace:ShellDuo.Models"
+    xmlns:views="clr-namespace:ShellDuo.Views"
+    x:Name="BrowseItemsPage"
+    Title="{Binding Title}">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Command="{Binding AddItemCommand}" Text="Add" />
+    </ContentPage.ToolbarItems>
+
+    <dualScreen:TwoPaneView
+        x:Name="TwoPaneView"
+        Pane1Length="1*"
+        Pane2Length="2*"
+        PanePriority="{Binding PanePriority}"
+        TallModeConfiguration="{Binding TallModeConfiguration}"
+        WideModeConfiguration="{Binding WideModeConfiguration}">
+        <dualScreen:TwoPaneView.Pane1>
+            <!--
+                x:DataType enables compiled bindings for better performance and compile time validation of binding expressions.
+                https://docs.microsoft.com/xamarin/xamarin-forms/app-fundamentals/data-binding/compiled-bindings
+            -->
+            <RefreshView
+                x:DataType="local:ItemsViewModel"
+                Command="{Binding LoadItemsCommand}"
+                IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
+                <CollectionView
+                    x:Name="ItemsListView"
+                    ItemsSource="{Binding Items}"
+                    SelectedItem="{Binding SelectedItem}"
+                    SelectionMode="Single">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <StackLayout Padding="10" x:DataType="model:Item">
+                                <Label
+                                    FontSize="16"
+                                    LineBreakMode="NoWrap"
+                                    Style="{DynamicResource ListItemTextStyle}"
+                                    Text="{Binding Text}" />
+                                <Label
+                                    FontSize="13"
+                                    LineBreakMode="NoWrap"
+                                    Style="{DynamicResource ListItemDetailTextStyle}"
+                                    Text="{Binding Description}" />
+                            </StackLayout>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </RefreshView>
+        </dualScreen:TwoPaneView.Pane1>
+        <dualScreen:TwoPaneView.Pane2>
+            <!--  view is shared with FlagDetailsPage  -->
+            <views:ItemDetailView />
+        </dualScreen:TwoPaneView.Pane2>
+    </dualScreen:TwoPaneView>
+
+</ContentPage>
